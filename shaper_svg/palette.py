@@ -1,14 +1,9 @@
-"""Shaper Origin SVG encoding — the EXACT constants used by Autodesk's official
-"Shaper Origin Export" Fusion add-in (ShaperUtilities).
+"""Shaper Origin SVG encoding — the colour and document conventions that Shaper
+Origin recognises.
 
-Provenance: reverse-engineered from the installed add-in
-  ~/Library/Application Support/Autodesk/ApplicationPlugins/ShaperUtilities.bundle
-    /Contents/commands/exportToOrigin/MyGeomMath.pyc   (class MyBoard.getSVG)
-by unmarshalling its string constants (the colours are built at runtime, not
-stored as text). These are the values Shaper Origin recognises; keep them exact.
-
-Cut type is encoded by the FILL colour (Shaper reads the colour, there is no
-shaper:cutType attribute). Depth is optional via shaper:cutDepth.
+Cut type is encoded by the FILL colour (Shaper reads the colour; there is no
+cut-type attribute). Depth is optional via shaper:cutDepth. These values are the
+ones Shaper Origin expects, so keep them exact.
 """
 
 # fill colours per cut type, written verbatim as rgb() like the add-in does
@@ -25,9 +20,10 @@ CUT_FILL = {"exterior": EXTERIOR, "interior": INTERIOR, "pocket": POCKET,
 NS_SVG   = "http://www.w3.org/2000/svg"
 NS_XLINK = "http://www.w3.org/1999/xlink"
 NS_SHAPER = "http://www.shapertools.com/namespaces/shaper"
-GENERATOR = "Fusion 360, Shaper Origin Export Add-In"  # mirrors the add-in's comment
+GENERATOR = "shaper-export-mcp"
 
-# Fusion works in centimetres, so the add-in emits cm everywhere.
+# Coordinates are emitted in centimetres; Shaper reads the real size from the
+# cm units on width/height.
 UNIT = "cm"
 MM_TO_CM = 0.1
 STROKE_WIDTH = "0.0010cm"       # hairline, exactly as the add-in

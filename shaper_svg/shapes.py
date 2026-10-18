@@ -1,7 +1,7 @@
 """Geometry helpers — all inputs in MILLIMETRES. Each returns an SVG element
-string already scaled to cm (Shaper/Fusion unit) with the right cut style.
+string already scaled to cm (Shaper unit) with the right cut style.
 A plate is placed with its bottom-left corner at (ox, oy) in mm; SVG Y is
-flipped so the drawing is right-side up like the Fusion add-in's output."""
+flipped so the drawing is right-side up."""
 from . import palette
 
 C = palette.MM_TO_CM

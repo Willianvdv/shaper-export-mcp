@@ -1,17 +1,13 @@
 # shaper-export-mcp
 
-Export CAD geometry to **Shaper Origin** SVG — an MCP server that produces the
-**exact same colour encoding** as Autodesk's official Fusion 360 *"Shaper Origin
-Export"* add-in, so the files drop straight onto the tool.
+Export CAD geometry to **Shaper Origin** SVG — an MCP server that writes the
+colour encoding Shaper Origin recognises, so the files drop straight onto the
+tool.
 
 ## The encoding (why this repo exists)
 
 Shaper Origin reads the **fill colour** of each shape to decide the cut type.
-These are the precise values the Fusion add-in writes — reverse-engineered from
-the installed bundle
-`…/Autodesk/ApplicationPlugins/ShaperUtilities.bundle/Contents/commands/exportToOrigin/MyGeomMath.pyc`
-(the colours are built at runtime, so they were recovered by unmarshalling the
-module's string constants). See [`shaper_svg/palette.py`](shaper_svg/palette.py).
+These are the values it expects. See [`shaper_svg/palette.py`](shaper_svg/palette.py).
 
 | cut type | meaning | fill (as written) | hex |
 |---|---|---|---|
@@ -21,8 +17,8 @@ module's string constants). See [`shaper_svg/palette.py`](shaper_svg/palette.py)
 | guide | guide line (not cut) | `rgb(37,107,246)` | `#256bf6` |
 | online | on-line / cut-along | `rgb(237,230,0)` | `#ede600` |
 
-Document conventions, also matched exactly: **units in cm** (Fusion is
-centimetre-internal), `stroke-width:0.0010cm`, `stroke-linecap:round`,
+Document conventions: **units in cm** (Shaper reads the real size from the cm
+units on width/height), `stroke-width:0.0010cm`, `stroke-linecap:round`,
 `stroke-linejoin:round`, `fill-rule:nonzero`, namespace
 `http://www.shapertools.com/namespaces/shaper`, `shaper:cutDepth`, and the
 `<!-- Generator: … -->` comment.
@@ -60,6 +56,5 @@ writer.write("out.svg", els, 430, 340)
 
 ## Note
 
-This reproduces the add-in's **output format**; it is not affiliated with
-Autodesk or Shaper. "Shaper Origin" and "Fusion 360" are trademarks of their
-owners.
+Not affiliated with or endorsed by Shaper Tools. "Shaper Origin" is a trademark
+of its owner.

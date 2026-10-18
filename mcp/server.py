@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """shaper-export-mcp — an MCP server that exports geometry to Shaper Origin SVG,
-using the EXACT colour/encoding of Autodesk's Fusion "Shaper Origin Export"
+using the exact colour/encoding that Shaper Origin recognises
 add-in (see shaper_svg/palette.py for provenance).
 
 Transport: newline-delimited JSON-RPC 2.0 over stdio (MCP stdio). No third-party
@@ -17,7 +17,7 @@ PROTOCOL = "2024-11-05"
 INFO = {"name": "shaper", "version": "0.1.0"}
 
 TOOLS = [
-    {"name": "shaper_palette", "description": "Return the exact Shaper Origin SVG colour encoding (cut type -> rgb) used by the Fusion add-in.",
+    {"name": "shaper_palette", "description": "Return the Shaper Origin SVG colour encoding (cut type -> rgb).",
      "inputSchema": {"type": "object", "properties": {}}},
     {"name": "shaper_plate_svg",
      "description": "Write a Shaper-Origin SVG for a rectangular plate: a rounded-rectangle exterior cut (black) with interior through-holes (white). All mm.",
@@ -108,7 +108,7 @@ def call(name, args):
     if name == "shaper_palette":
         return json.dumps({"unit": palette.UNIT, "stroke_width": palette.STROKE_WIDTH,
                            "cut_fill_rgb": palette.CUT_FILL, "namespace": palette.NS_SHAPER,
-                           "provenance": "reverse-engineered from Autodesk ShaperUtilities.bundle (MyGeomMath.pyc)"}, indent=1)
+                           "note": "cut type is encoded by fill colour; Shaper Origin spec"}, indent=1)
     if name == "shaper_plate_svg":
         els = shapes.plate((args["width_mm"], args["height_mm"]),
                            [(h[0], h[1]) for h in args["holes_mm"]], args["height_mm"], (0, 0),
