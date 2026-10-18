@@ -58,3 +58,13 @@ writer.write("out.svg", els, 430, 340)
 
 Not affiliated with or endorsed by Shaper Tools. "Shaper Origin" is a trademark
 of its owner.
+
+## Licence
+
+[MIT](LICENSE) — open source, do what you like.
+
+## Related
+
+| Project | What it is |
+|---|---|
+| [**cad-render-mcp**](https://github.com/Willianvdv/cad-render-mcp) | Also check out this CAD tool by me — a GPU renderer for STEP/BREP/IGES models over MCP (photorealistic + technical views, sections, measurements). |
