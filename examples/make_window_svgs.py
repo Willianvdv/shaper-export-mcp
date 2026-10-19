@@ -1,7 +1,11 @@
-"""Generate the three FM2 window SVGs for Shaper Origin:
-  1. fenster01_au_outside.svg   — the outer plate (430x340, 24 holes)
-  2. fenster01_innen_inside.svg — the inner plate (360x260, 8 holes, owner-measured)
-  3. fenster01_combined.svg     — both plates side by side on one sheet (reference layout)
+"""Generate the FM2 window SVGs for Shaper Origin:
+  1. fenster01_au_outside.svg    — the outer plate (430x340, 24 holes)
+  2. fenster01_innen_inside.svg  — the inner plate (360x260, 8 holes, owner-measured)
+  3. fenster01_combined.svg      — both plates side by side on one sheet (reference layout)
+  4. fenster01_stacked_test.svg  — ONE plate carrying BOTH hole patterns concentrically
+     (outside 24 + inside 8), so you can CNC a single test plate and bolt-check both
+     frames against it. Both frames mount centred on the same window opening, so the two
+     patterns share a centre; each set is centred on the plate centre by its own bbox.
 Hole data is read from the fm2-base spec JSONs (measured). Run from anywhere.
 usage: python3 examples/make_window_svgs.py [out_dir]
 """
@@ -40,5 +44,22 @@ els = shapes.plate((O_W, O_H), O_HOLES, sheet_h, (0, 0), R, O_DIA)
 els += shapes.plate((I_W, I_H), I_HOLES, sheet_h, (O_W + GAP, 0), R, I_DIA)
 writer.write(os.path.join(OUT, "fenster01_combined.svg"), els, sheet_w, sheet_h)
 
-for f in ("fenster01_au_outside", "fenster01_innen_inside", "fenster01_combined"):
+# 4. stacked test plate: both patterns concentric on the larger (430x340) outline.
+#    Centre each hole set on the plate centre by its own bbox centre -> both frames,
+#    which mount centred on the same opening, line up on one test plate.
+def _centred(holes, cx, cy):
+    xs = [h[0] for h in holes]; ys = [h[1] for h in holes]
+    hx = (min(xs) + max(xs)) / 2.0; hy = (min(ys) + max(ys)) / 2.0
+    return [(h[0] + (cx - hx), h[1] + (cy - hy)) for h in holes]
+
+CX, CY = O_W / 2.0, O_H / 2.0
+els = [shapes.rounded_rect(0, 0, O_W, O_H, R, O_H, "exterior")]
+for hx, hy in _centred(O_HOLES, CX, CY):
+    els.append(shapes.circle(hx, hy, O_DIA, O_H, "interior"))
+for hx, hy in _centred(I_HOLES, CX, CY):
+    els.append(shapes.circle(hx, hy, I_DIA, O_H, "interior"))
+writer.write(os.path.join(OUT, "fenster01_stacked_test.svg"), els, O_W, O_H)
+
+for f in ("fenster01_au_outside", "fenster01_innen_inside", "fenster01_combined",
+          "fenster01_stacked_test"):
     print("wrote", os.path.join(OUT, f + ".svg"))
