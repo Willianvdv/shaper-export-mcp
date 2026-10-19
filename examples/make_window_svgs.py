@@ -52,13 +52,14 @@ def _centred(holes, cx, cy):
     hx = (min(xs) + max(xs)) / 2.0; hy = (min(ys) + max(ys)) / 2.0
     return [(h[0] + (cx - hx), h[1] + (cy - hy)) for h in holes]
 
-CX, CY = O_W / 2.0, O_H / 2.0
-els = [shapes.rounded_rect(0, 0, O_W, O_H, R, O_H, "exterior")]
+S_W, S_H = max(O_W, I_W), max(O_H, I_H)   # plate big enough for both patterns
+CX, CY = S_W / 2.0, S_H / 2.0
+els = [shapes.rounded_rect(0, 0, S_W, S_H, R, S_H, "exterior")]
 for hx, hy in _centred(O_HOLES, CX, CY):
-    els.append(shapes.circle(hx, hy, O_DIA, O_H, "interior"))
+    els.append(shapes.circle(hx, hy, O_DIA, S_H, "interior"))
 for hx, hy in _centred(I_HOLES, CX, CY):
-    els.append(shapes.circle(hx, hy, I_DIA, O_H, "interior"))
-writer.write(os.path.join(OUT, "fenster01_stacked_test.svg"), els, O_W, O_H)
+    els.append(shapes.circle(hx, hy, I_DIA, S_H, "interior"))
+writer.write(os.path.join(OUT, "fenster01_stacked_test.svg"), els, S_W, S_H)
 
 for f in ("fenster01_au_outside", "fenster01_innen_inside", "fenster01_combined",
           "fenster01_stacked_test"):
